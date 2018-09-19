@@ -39,8 +39,8 @@ enum Fonts {
     static let DisplayNormal = UIFont(name: "\(fontName)-Book", size: 30)!
     static let DisplayBold = UIFont(name: "\(fontName)-Heavy", size: 30)!
     
-    
     static let ButtonText = UIFont(name: "\(fontName)-Heavy", size: 18)!
+    static let ButtonTextLight = UIFont(name: "\(fontName)-Book", size: 18)!
     
     static let NavigationTitle = UIFont(name: "\(fontName)-Medium", size: 20)!
     static let NavigationButton = UIFont(name: "\(fontName)-Roman", size: 18)!

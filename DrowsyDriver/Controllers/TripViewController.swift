@@ -8,9 +8,11 @@
 
 import UIKit
 import AVKit
+import MapKit
+import CoreLocation
 import Vision
 
-class TripViewController: GradientViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+class TripViewController: GradientViewController, AVCaptureVideoDataOutputSampleBufferDelegate, CLLocationManagerDelegate {
     
     // MARK: - Properties
     private var pauseButton: RoundedButton!
@@ -19,6 +21,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     private var driveTimeLabel: UILabel!
     private var etaLabel: UILabel!
     private var buttonStackView: UIStackView!
+    private var restStopButton: RoundedSelectionItem!
 
     private var tripTimer = TimeTracker(name: "trip")
     private var snoozeTimer: Timer?
@@ -39,6 +42,9 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         attributedString.setAttributes(boldAttrs, range: NSMakeRange(24, attributedString.length - 24))
         return attributedString
     }
+    
+    private let locationManager = CLLocationManager()
+    private var nearestRestStop: MKMapItem?
     
     // MARK: Eye Tracking
     
@@ -71,6 +77,8 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         updateUI()
         tripTimer.start()
         NotificationCenter.default.addObserver(self, selector: #selector(updateStatus), name: tripTimer.notification.name, object: nil)
+        
+        locationManager.requestWhenInUseAuthorization()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,6 +91,15 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         let audioData = NSDataAsset(name: SettingsManager.shared.alarmSound.rawValue)!.data
         alarmPlayer = try! AVAudioPlayer(data: audioData)
         alarmPlayer.numberOfLoops = -1
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+            restStopButton.isHidden = false
+        } else {
+            restStopButton.isHidden = true
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -90,6 +107,8 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         session?.stopRunning()
         session = nil
         snoozeTimer?.invalidate()
+        snoozeTimer = nil
+        locationManager.stopUpdatingLocation()
         stopAlarm()
     }
     
@@ -141,6 +160,50 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         dismiss(animated: true, completion: nil)
     }
     
+    // MARK: Location/Navigation
+    
+    @objc func navigateToRestStop() {
+        nearestRestStop?.openInMaps(launchOptions: nil)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
+        print("locations = \(locValue.latitude) \(locValue.longitude)")
+        calculateRestStopETA(from: locValue)
+    }
+    
+    private func calculateRestStopETA(from location: CLLocationCoordinate2D) {
+        // Search for rest stops
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = "rest stop"
+        
+        let search = MKLocalSearch(request: request)
+        search.start { response, _ in
+            guard let restStop = response?.mapItems.first else {
+                return
+            }
+            
+            self.nearestRestStop = restStop
+            
+            // Get directions to nearest rest stop
+            let directionsRequest = MKDirections.Request()
+            directionsRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: location))
+            directionsRequest.destination = restStop
+            directionsRequest.transportType = .automobile
+            
+            let directions = MKDirections(request: directionsRequest)
+            directions.calculate { [weak self] response, error in
+                guard let eta = response?.routes.first?.expectedTravelTime else { return }
+                
+                DispatchQueue.main.async {
+                    self?.restStopButton.textLabel.text = eta.hoursMinutesDescription()
+                    self?.restStopButton.detailLabel.text = "to \(restStop.name ?? "nearest rest stop")"
+                }
+            }
+        }
+    }
+    
+    
     // MARK: UI
     
     func updateUI() {
@@ -186,6 +249,19 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         settingsButton.widthAnchor.constraint(equalToConstant: Constraints.SettingsButton.width).isActive = true
         settingsButton.heightAnchor.constraint(equalToConstant: Constraints.SettingsButton.height).isActive = true
         
+        // Rest Stop View
+        restStopButton = RoundedSelectionItem()
+        restStopButton.textLabel.text = "--"
+        restStopButton.detailLabel.text = "to nearest rest stop"
+        
+        view.addSubview(restStopButton)
+        restStopButton.translatesAutoresizingMaskIntoConstraints = false
+        restStopButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Constraints.RestStopView.leftConstant).isActive = true
+        restStopButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: Constraints.RestStopView.rightConstant).isActive = true
+        restStopButton.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: Constraints.RestStopView.bottomConstant).isActive = true
+        restStopButton.heightAnchor.constraint(equalToConstant: Constraints.RestStopView.height).isActive = true
+        restStopButton.addTarget(self, action: #selector(navigateToRestStop), for: .touchUpInside)
+        
         // Drive Time Label
         driveTimeLabel = UILabel()
         driveTimeLabel.numberOfLines = 0
@@ -196,7 +272,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         driveTimeLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Constraints.StatusText.leftConstant).isActive = true
         driveTimeLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: Constraints.StatusText.rightConstant).isActive = true
         driveTimeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        driveTimeLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        driveTimeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constraints.DriveTimeLabel.topConstant).isActive = true
         
         // ETA Label
         etaLabel = UILabel()
@@ -220,6 +296,13 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
             static let rightConstant: CGFloat = -16
         }
         
+        enum RestStopView {
+            static let height: CGFloat = 80
+            static let bottomConstant: CGFloat = -16
+            static let leftConstant: CGFloat = 24
+            static let rightConstant: CGFloat = -24
+        }
+        
         enum ButtonStackView {
             static let height: CGFloat = 55
             static let bottomConstant: CGFloat = -24
@@ -230,6 +313,10 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         enum StatusText {
             static let leftConstant: CGFloat = 24
             static let rightConstant: CGFloat = -24
+        }
+        
+        enum DriveTimeLabel {
+            static let topConstant: CGFloat = 80
         }
     }
     
