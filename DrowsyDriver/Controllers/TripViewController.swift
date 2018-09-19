@@ -85,15 +85,18 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Facial detection configuration
         session = self.setupAVCaptureSession()
         prepareVisionRequest()
         session?.startRunning()
         
-        // Audio Configuration
+        // Audio configuration
         let audioData = NSDataAsset(name: SettingsManager.shared.alarmSound.rawValue)!.data
         alarmPlayer = try! AVAudioPlayer(data: audioData)
         alarmPlayer.numberOfLoops = -1
         
+        // Location configuration
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -101,9 +104,6 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
             locationTimer = Timer.scheduledTimer(withTimeInterval: locationUpdateFrequency, repeats: true, block: { _ in
                 self.locationManager.startUpdatingLocation()
             })
-            restStopButton.isHidden = false
-        } else {
-            restStopButton.isHidden = true
         }
     }
     
@@ -170,7 +170,8 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     // MARK: Location/Navigation
     
     @objc func navigateToRestStop() {
-        nearestRestStop?.openInMaps(launchOptions: nil)
+        let options = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+        nearestRestStop?.openInMaps(launchOptions: options)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -185,16 +186,16 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         
         // Search for rest stops
         let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = "rest stop"
+        request.naturalLanguageQuery = SettingsManager.shared.quickNavigateQuery
         request.region = MKCoordinateRegion(center: userCoordinate, latitudinalMeters: 10, longitudinalMeters: 10)
         
         let search = MKLocalSearch(request: request)
         search.start { response, _ in
             guard let restStops = response?.mapItems else {
+                self.restStopButton.textLabel.text = "Location search failed"
+                self.restStopButton.detailLabel.text = "No \"\(SettingsManager.shared.quickNavigateQuery.lowercased())\" found"
                 return
             }
-            
-            print(restStops)
             
             // Find nearest rest stop
             self.nearestRestStop = restStops.reduce((CLLocationDistanceMax, nil)) { (nearest, stop) in
@@ -212,11 +213,15 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
             
             let directions = MKDirections(request: directionsRequest)
             directions.calculateETA(completionHandler: { [weak self ] (response, error) in
-                guard let eta = response?.expectedTravelTime else { return }
+                guard let eta = response?.expectedTravelTime else {
+                    self?.restStopButton.textLabel.text = "Location search failed"
+                    self?.restStopButton.detailLabel.text = "No \"\(SettingsManager.shared.quickNavigateQuery.lowercased())\" found"
+                    return
+                }
                 
                 DispatchQueue.main.async {
                     self?.restStopButton.textLabel.text = eta.hoursMinutesDescription()
-                    self?.restStopButton.detailLabel.text = self?.nearestRestStop?.name ?? "from nearest rest stop"
+                    self?.restStopButton.detailLabel.text = self?.nearestRestStop?.name ?? "from nearest \(SettingsManager.shared.quickNavigateQuery.lowercased())"
                 }
             })
         }
@@ -270,7 +275,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         
         // Rest Stop View
         restStopButton = RoundedSelectionItem()
-        restStopButton.textLabel.text = "---"
+        restStopButton.textLabel.text = "..."
         restStopButton.detailLabel.text = "to nearest rest stop"
         
         view.addSubview(restStopButton)

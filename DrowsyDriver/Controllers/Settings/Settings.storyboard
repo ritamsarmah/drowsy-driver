@@ -84,6 +84,42 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection footerTitle="Enter a location type for the quick navigation button, such as &quot;Coffee&quot;" id="fgm-0i-sSg">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="rY5-Og-Ba7">
+                                        <rect key="frame" x="0.0" y="159" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="rY5-Og-Ba7" id="clh-4e-POz">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Quick Navigate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hU1-89-a6e">
+                                                    <rect key="frame" x="16" y="11.5" width="116" height="20.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" text="Rest Stop" textAlignment="right" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZXn-bd-KtB">
+                                                    <rect key="frame" x="156" y="7" width="199" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="8Rt-Jf-Lai"/>
+                                                    </constraints>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="hU1-89-a6e" firstAttribute="leading" secondItem="clh-4e-POz" secondAttribute="leadingMargin" id="0iD-9Z-7YB"/>
+                                                <constraint firstAttribute="trailing" secondItem="ZXn-bd-KtB" secondAttribute="trailing" constant="20" symbolic="YES" id="UJc-g4-GMz"/>
+                                                <constraint firstItem="ZXn-bd-KtB" firstAttribute="centerY" secondItem="clh-4e-POz" secondAttribute="centerY" id="V9i-UE-5ad"/>
+                                                <constraint firstItem="hU1-89-a6e" firstAttribute="centerY" secondItem="clh-4e-POz" secondAttribute="centerY" id="hIZ-tO-4tg"/>
+                                                <constraint firstItem="ZXn-bd-KtB" firstAttribute="leading" secondItem="hU1-89-a6e" secondAttribute="trailing" constant="24" id="xD2-47-yDT"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="IAA-DM-xoN" id="SQB-KP-asO"/>
@@ -101,6 +137,9 @@
                     <connections>
                         <outlet property="alarmSoundCell" destination="2iS-P5-IVd" id="Xdf-Cj-lSi"/>
                         <outlet property="periodicRestCell" destination="EMm-vy-LC6" id="rk2-NH-Uz6"/>
+                        <outlet property="quickNavCell" destination="rY5-Og-Ba7" id="ThW-6h-uVP"/>
+                        <outlet property="quickNavTextField" destination="ZXn-bd-KtB" id="pvJ-Ow-Wmp"/>
+                        <outlet property="quickNavTextLabel" destination="hU1-89-a6e" id="fgJ-tU-7gZ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bwf-FP-UUZ" userLabel="First Responder" sceneMemberID="firstResponder"/>

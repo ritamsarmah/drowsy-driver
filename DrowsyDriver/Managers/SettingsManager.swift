@@ -9,8 +9,8 @@
 import Foundation
 
 fileprivate enum Settings {
-    static let DarkMode = "DarkMode"
     static let AlarmSound = "AlarmSound"
+    static let QuickNavigate = "QuickNavigate"
 }
 
 class SettingsManager {
@@ -21,24 +21,26 @@ class SettingsManager {
         case beep = "Beep"
     }
     
+    private let defaultQuickNavigation = "Rest Stop"
+    
     static let shared = SettingsManager()
     
     private let defaults = UserDefaults.standard
     
     private init() {}
     
-    var isDarkModeEnabled: Bool {
-        get { return defaults.bool(forKey: Settings.DarkMode) }
-        set { defaults.set(newValue, forKey: Settings.DarkMode) }
-    }
-    
     var alarmSound: AlarmSound {
         get { return AlarmSound(rawValue: defaults.string(forKey: Settings.AlarmSound)!)! }
         set { defaults.set(newValue.rawValue, forKey: Settings.AlarmSound) }
     }
     
+    var quickNavigateQuery: String {
+        get { return defaults.string(forKey: Settings.QuickNavigate)! }
+        set { defaults.set(newValue.isEmpty ? quickNavigateQuery : newValue, forKey: Settings.QuickNavigate) }
+    }
+    
     func registerDefaults() {
-        UserDefaults.standard.register(defaults: [Settings.DarkMode: false])
         UserDefaults.standard.register(defaults: [Settings.AlarmSound: AlarmSound.beep.rawValue])
+        UserDefaults.standard.register(defaults: [Settings.QuickNavigate: defaultQuickNavigation])
     }
 }

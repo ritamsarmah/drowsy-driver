@@ -37,5 +37,10 @@ struct Alert {
         Alert.presentAlert(on: viewController, title: "An unexpected failure occurred", message: nil)
     }
     
+    // MARK: Authorization Alerts
+    
+    static func presentCameraAccessNeeded(on viewController: UIViewController) {
+        presentAlert(on: viewController, title: "Camera Access Needed", message: "DrowsyDriver needs access to your camera to detect your face. Please enable it in your settings.")
+    }
 
 }

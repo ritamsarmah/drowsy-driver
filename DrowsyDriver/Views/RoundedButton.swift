@@ -24,7 +24,7 @@ class RoundedButton: UIButton {
         self.titleLabel?.font = Fonts.ButtonText
         self.setTitleColor(.black, for: .normal)
         self.backgroundColor = Colors.Button
-        self.setBackgroundColor(color: UIColor(white: 1.0, alpha: 0.7), forState: .highlighted)
+        self.setBackgroundColor(color: Colors.Button, forState: .highlighted)
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 10
     }
