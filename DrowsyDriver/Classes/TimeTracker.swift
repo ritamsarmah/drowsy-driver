@@ -19,7 +19,7 @@ class TimeTracker {
     var elapsedSeconds: TimeInterval = 0.0
     
     var elapsedTime: String {
-        return elapsedSeconds.hoursMinutesDescription()
+        return elapsedSeconds.hmsDescription()
     }
     
     var precision = 1.0 {

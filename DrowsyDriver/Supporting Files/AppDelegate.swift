@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.makeKeyAndVisible()
         
         // Set proper audio alert playback
-        try! AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .duckOthers)
+        try! AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .interruptSpokenAudioAndMixWithOthers)
         
         return true
     }

@@ -31,6 +31,8 @@ class RoundedSelectionItem: RoundedButton {
         detailLabel.font = Fonts.ButtonTextLight
         detailLabel.textColor = Colors.DarkText
         detailLabel.baselineAdjustment = .alignCenters
+        detailLabel.adjustsFontSizeToFitWidth = true
+        detailLabel.minimumScaleFactor = 0.8
         
         textStackView = UIStackView(arrangedSubviews: [textLabel, detailLabel])
         textStackView.axis = .vertical

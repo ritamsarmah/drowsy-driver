@@ -44,6 +44,8 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     }
     
     private let locationManager = CLLocationManager()
+    private let locationUpdateFrequency: TimeInterval = 5
+    private var locationTimer: Timer?
     private var nearestRestStop: MKMapItem?
     
     // MARK: Eye Tracking
@@ -95,7 +97,10 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.startUpdatingLocation()
+            self.locationManager.startUpdatingLocation()
+            locationTimer = Timer.scheduledTimer(withTimeInterval: locationUpdateFrequency, repeats: true, block: { _ in
+                self.locationManager.startUpdatingLocation()
+            })
             restStopButton.isHidden = false
         } else {
             restStopButton.isHidden = true
@@ -106,6 +111,8 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         super.viewWillDisappear(animated)
         session?.stopRunning()
         session = nil
+        locationTimer?.invalidate()
+        locationTimer = nil
         snoozeTimer?.invalidate()
         snoozeTimer = nil
         locationManager.stopUpdatingLocation()
@@ -167,39 +174,51 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
-        print("locations = \(locValue.latitude) \(locValue.longitude)")
-        calculateRestStopETA(from: locValue)
+        guard let location = manager.location else { return }
+        calculateRestStopETA(from: location)
+        manager.stopUpdatingLocation()
     }
     
-    private func calculateRestStopETA(from location: CLLocationCoordinate2D) {
+    private func calculateRestStopETA(from location: CLLocation) {
+        
+        let userCoordinate = location.coordinate
+        
         // Search for rest stops
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = "rest stop"
+        request.region = MKCoordinateRegion(center: userCoordinate, latitudinalMeters: 10, longitudinalMeters: 10)
         
         let search = MKLocalSearch(request: request)
         search.start { response, _ in
-            guard let restStop = response?.mapItems.first else {
+            guard let restStops = response?.mapItems else {
                 return
             }
             
-            self.nearestRestStop = restStop
+            print(restStops)
+            
+            // Find nearest rest stop
+            self.nearestRestStop = restStops.reduce((CLLocationDistanceMax, nil)) { (nearest, stop) in
+                let coord = stop.placemark.coordinate
+                let restStopLocation = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
+                let travelDistance = location.distance(from: restStopLocation)
+                return travelDistance < nearest.0 ? (travelDistance, stop) : nearest
+            }.1
             
             // Get directions to nearest rest stop
             let directionsRequest = MKDirections.Request()
-            directionsRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: location))
-            directionsRequest.destination = restStop
+            directionsRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: userCoordinate))
+            directionsRequest.destination = self.nearestRestStop
             directionsRequest.transportType = .automobile
             
             let directions = MKDirections(request: directionsRequest)
-            directions.calculate { [weak self] response, error in
-                guard let eta = response?.routes.first?.expectedTravelTime else { return }
+            directions.calculateETA(completionHandler: { [weak self ] (response, error) in
+                guard let eta = response?.expectedTravelTime else { return }
                 
                 DispatchQueue.main.async {
                     self?.restStopButton.textLabel.text = eta.hoursMinutesDescription()
-                    self?.restStopButton.detailLabel.text = "to \(restStop.name ?? "nearest rest stop")"
+                    self?.restStopButton.detailLabel.text = self?.nearestRestStop?.name ?? "from nearest rest stop"
                 }
-            }
+            })
         }
     }
     
@@ -251,7 +270,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         
         // Rest Stop View
         restStopButton = RoundedSelectionItem()
-        restStopButton.textLabel.text = "--"
+        restStopButton.textLabel.text = "---"
         restStopButton.detailLabel.text = "to nearest rest stop"
         
         view.addSubview(restStopButton)
