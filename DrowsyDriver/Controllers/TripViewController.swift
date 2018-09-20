@@ -398,7 +398,7 @@ extension TripViewController {
             }
         }
         
-        throw NSError(domain: "ViewController", code: 1, userInfo: nil)
+        throw NSError(domain: "ViewController", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not detect or configure front facing camera"])
     }
     
     /// - Tag: CreateSerialDispatchQueue

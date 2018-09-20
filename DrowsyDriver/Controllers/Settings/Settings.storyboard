@@ -55,40 +55,12 @@
                                             <segue destination="7DA-gx-1y4" kind="show" id="0IJ-pi-2an"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="dsD-Nf-01K" detailTextLabel="a9f-qy-Ibh" imageView="jax-Du-P8l" style="IBUITableViewCellStyleValue1" id="EMm-vy-LC6">
-                                        <rect key="frame" x="0.0" y="79" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EMm-vy-LC6" id="uPB-T1-eHK">
-                                            <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Periodic Rest Reminder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dsD-Nf-01K">
-                                                    <rect key="frame" x="16" y="12" width="178" height="20.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="a9f-qy-Ibh">
-                                                    <rect key="frame" x="296" y="12" width="44" height="20.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="jax-Du-P8l">
-                                                    <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                </imageView>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection footerTitle="Enter a location type for the quick navigation button, such as &quot;Coffee&quot;" id="fgm-0i-sSg">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="rY5-Og-Ba7">
-                                        <rect key="frame" x="0.0" y="159" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="115" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="rY5-Og-Ba7" id="clh-4e-POz">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -124,7 +96,7 @@
                             <tableViewSection footerTitle="" id="Q1w-IA-IUJ">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="WXY-4Q-XG3" style="IBUITableViewCellStyleDefault" id="WyD-lG-341">
-                                        <rect key="frame" x="0.0" y="267" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="223" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WyD-lG-341" id="yYt-fD-yNr">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -162,7 +134,6 @@
                     <connections>
                         <outlet property="alarmSoundCell" destination="2iS-P5-IVd" id="Xdf-Cj-lSi"/>
                         <outlet property="cameraCheckCell" destination="WyD-lG-341" id="N41-YB-acg"/>
-                        <outlet property="periodicRestCell" destination="EMm-vy-LC6" id="rk2-NH-Uz6"/>
                         <outlet property="quickNavCell" destination="rY5-Og-Ba7" id="ThW-6h-uVP"/>
                         <outlet property="quickNavTextField" destination="ZXn-bd-KtB" id="pvJ-Ow-Wmp"/>
                         <outlet property="quickNavTextLabel" destination="hU1-89-a6e" id="fgJ-tU-7gZ"/>
@@ -239,7 +210,7 @@
                             <constraint firstItem="8kD-4G-XxP" firstAttribute="bottom" secondItem="UcX-yX-pLw" secondAttribute="bottom" constant="30" id="1XP-PA-O9V"/>
                             <constraint firstItem="UcX-yX-pLw" firstAttribute="centerX" secondItem="1Wt-54-Y0F" secondAttribute="centerX" id="2W9-bx-k8n"/>
                             <constraint firstItem="E98-u3-Im8" firstAttribute="leading" secondItem="8kD-4G-XxP" secondAttribute="leading" id="Nqs-T7-WoZ"/>
-                            <constraint firstItem="8kD-4G-XxP" firstAttribute="bottom" secondItem="E98-u3-Im8" secondAttribute="bottom" id="TAP-sE-j22"/>
+                            <constraint firstAttribute="bottom" secondItem="E98-u3-Im8" secondAttribute="bottom" id="TAP-sE-j22"/>
                             <constraint firstItem="h7J-nF-gHw" firstAttribute="top" secondItem="8kD-4G-XxP" secondAttribute="top" constant="10" id="YxF-Os-5VE"/>
                             <constraint firstItem="8kD-4G-XxP" firstAttribute="trailing" secondItem="h7J-nF-gHw" secondAttribute="trailing" constant="20" id="cAM-MW-jLS"/>
                             <constraint firstItem="8kD-4G-XxP" firstAttribute="trailing" secondItem="E98-u3-Im8" secondAttribute="trailing" id="dqC-Md-ov8"/>

@@ -16,14 +16,12 @@ class SettingsViewController: GradientTableViewController, UITextFieldDelegate {
     
     // MARK: Cells
     @IBOutlet weak var alarmSoundCell: UITableViewCell!
-    @IBOutlet weak var periodicRestCell: UITableViewCell!
     @IBOutlet weak var quickNavCell: UITableViewCell!
     @IBOutlet weak var cameraCheckCell: UITableViewCell!
     
     override var allCells: [UITableViewCell] {
         return [
             alarmSoundCell,
-            periodicRestCell,
             quickNavCell,
             cameraCheckCell
         ]
