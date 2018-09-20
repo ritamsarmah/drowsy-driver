@@ -40,9 +40,16 @@ class GradientTableViewController: UITableViewController {
         updateUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setTableViewBackgroundGradient(to: backgroundGradient)
+    }
+    
     func updateUI() {
         tableView = UITableView(frame: tableView.frame, style: .grouped)
         tableView.separatorColor = Colors.TableViewCellSelected
+        tableView.keyboardDismissMode = .onDrag
+        
         
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
@@ -70,11 +77,8 @@ class GradientTableViewController: UITableViewController {
         cell.selectedBackgroundView = selectionColorView
         cell.backgroundColor = Colors.TableViewCellNormal
         cell.tintColor = .white
-        for label in [cell.textLabel, cell.detailTextLabel] {
-            label?.font = Fonts.TableViewCell
-            label?.textColor = .white
-            label?.backgroundColor = .clear
-        }
+        if let textLabel = cell.textLabel { updateLabelAppearance(for: textLabel) }
+        if let detailTextLabel = cell.detailTextLabel { updateLabelAppearance(for: detailTextLabel, isDetail: true) }
         
         if cell.accessoryType == .disclosureIndicator {
             let accessoryLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 8, height: 20))
@@ -88,6 +92,25 @@ class GradientTableViewController: UITableViewController {
         }
     }
     
+    func updateLabelAppearance(for label: UILabel, isDetail: Bool = false) {
+        label.font = isDetail ? Fonts.TableViewCellDetail : Fonts.TableViewCell
+        label.textColor = .white
+        label.backgroundColor = .clear
+    }
+    
+    func updateTextFieldAppearance(for textField: UITextField) {
+        textField.autocapitalizationType = .words
+        textField.font = Fonts.TableViewCellDetail
+        textField.textColor = .white
+        textField.backgroundColor = .clear
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let footer = view as! UITableViewHeaderFooterView
+        footer.textLabel?.font = Fonts.TableViewFooter
+        footer.textLabel?.textColor = .white
+    }
+    
     // Background Gradient
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -99,7 +122,7 @@ class GradientTableViewController: UITableViewController {
         let newLayer = CAGradientLayer()
         newLayer.colors = colors.map { $0.cgColor }
         newLayer.locations = [0.0, 1.0]
-        newLayer.frame = frame ?? tableView.bounds
+        newLayer.frame = frame ?? view.frame
         backgroundGradientLayer = newLayer
     }
     

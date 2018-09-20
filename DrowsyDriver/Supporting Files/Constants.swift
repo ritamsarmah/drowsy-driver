@@ -26,12 +26,15 @@ enum Colors {
         static let Dark = UIColor.black
     }
     
+    static let Translucent = UIColor(white: 1.0, alpha: 0.65)
+    
     static let DarkText = UIColor.black
     static let DisplayText = UIColor.white
-    static let Translucent = UIColor(white: 1.0, alpha: 0.65)
+    
     static let TableViewCellNormal = UIColor(white: 1.0, alpha: 0.25)
     static let TableViewCellSelected = UIColor(white: 1.0, alpha: 0.50)
-    static let Button = Colors.Translucent
+    
+    static let Button = UIColor(white: 1.0, alpha: 0.7)
 }
 
 enum Fonts {
@@ -39,11 +42,13 @@ enum Fonts {
     static let DisplayNormal = UIFont(name: "\(fontName)-Book", size: 30)!
     static let DisplayBold = UIFont(name: "\(fontName)-Heavy", size: 30)!
     
-    
     static let ButtonText = UIFont(name: "\(fontName)-Heavy", size: 18)!
+    static let ButtonTextLight = UIFont(name: "\(fontName)-Book", size: 18)!
     
     static let NavigationTitle = UIFont(name: "\(fontName)-Medium", size: 20)!
     static let NavigationButton = UIFont(name: "\(fontName)-Roman", size: 18)!
-    static let TableViewCell = UIFont(name: "\(fontName)-Roman", size: 16)!
+    static let TableViewCell = UIFont(name: "\(fontName)-Medium", size: 16)!
+    static let TableViewCellDetail = UIFont(name: "\(fontName)-Book", size: 16)!
     static let TableViewAccessory = UIFont(name: "\(fontName)-Book", size: 24)!
+    static let TableViewFooter = UIFont(name: "\(fontName)-Book", size: 13)!
 }

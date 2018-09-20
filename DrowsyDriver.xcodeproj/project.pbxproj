@@ -11,6 +11,7 @@
 		2013EA9B2151659300533D61 /* GradientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2013EA9A2151659300533D61 /* GradientViewController.swift */; };
 		2013EA9D215181A800533D61 /* GradientTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2013EA9C215181A800533D61 /* GradientTableViewController.swift */; };
 		2013EA9F2151835E00533D61 /* AlarmSoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2013EA9E2151835E00533D61 /* AlarmSoundViewController.swift */; };
+		202207A42151F1F5006B1D8B /* TimeInterval+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202207A32151F1F5006B1D8B /* TimeInterval+String.swift */; };
 		204757CC214F0901004E401E /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204757CB214F0901004E401E /* SettingsManager.swift */; };
 		204757D0214F094D004E401E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204757CF214F094D004E401E /* Constants.swift */; };
 		204757D9214F2883004E401E /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204757D8214F2883004E401E /* Alert.swift */; };
@@ -33,6 +34,7 @@
 		2013EA9A2151659300533D61 /* GradientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientViewController.swift; sourceTree = "<group>"; };
 		2013EA9C215181A800533D61 /* GradientTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientTableViewController.swift; sourceTree = "<group>"; };
 		2013EA9E2151835E00533D61 /* AlarmSoundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSoundViewController.swift; sourceTree = "<group>"; };
+		202207A32151F1F5006B1D8B /* TimeInterval+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+String.swift"; sourceTree = "<group>"; };
 		204757CB214F0901004E401E /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		204757CF214F094D004E401E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		204757D8214F2883004E401E /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			children = (
 				20A2D270214F401F00719082 /* UIColor+Formats.swift */,
 				20A2D271214F401F00719082 /* UIButton+BackgroundColor.swift */,
+				202207A32151F1F5006B1D8B /* TimeInterval+String.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 				20A2D278214F414400719082 /* RoundedButton.swift in Sources */,
 				204757CC214F0901004E401E /* SettingsManager.swift in Sources */,
 				20A2D273214F401F00719082 /* UIButton+BackgroundColor.swift in Sources */,
+				202207A42151F1F5006B1D8B /* TimeInterval+String.swift in Sources */,
 				20A2D27C214F4E7E00719082 /* TimeTracker.swift in Sources */,
 				20A2D27E214F5CA100719082 /* RepeatingTimer.swift in Sources */,
 				204757D9214F2883004E401E /* Alert.swift in Sources */,

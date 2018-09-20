@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 class HomeViewController: GradientViewController {
 
@@ -19,10 +20,21 @@ class HomeViewController: GradientViewController {
         updateUI()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if AVCaptureDevice.authorizationStatus(for: .video) != .authorized {
+            requestCameraAccess()
+        }
+    }
+    
     @objc func startTrip() {
-        let vc = TripViewController()
-        vc.modalTransitionStyle = .crossDissolve
-        present(vc, animated: true, completion: nil)
+        if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
+            let vc = TripViewController()
+            vc.modalTransitionStyle = .crossDissolve
+            present(vc, animated: true, completion: nil)
+        } else {
+            requestCameraAccess()
+        }
     }
     
     func updateUI() {
@@ -62,6 +74,14 @@ class HomeViewController: GradientViewController {
     @objc func openSettings() {
         let vc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewController(withIdentifier: "SettingsNavigation") as! UINavigationController
         present(vc, animated: true, completion: nil)
+    }
+    
+    @objc func requestCameraAccess() {
+        AVCaptureDevice.requestAccess(for: AVMediaType.video) { response in
+            if !response {
+                Alert.presentCameraAccessNeeded(on: self)
+            }
+        }
     }
     
     private enum Constraints {

@@ -16,16 +16,10 @@ class TimeTracker {
     
     var isTracking: Bool = false
     
-    var elapsedSeconds = 0.0
+    var elapsedSeconds: TimeInterval = 0.0
     
     var elapsedTime: String {
-        let hours = Int(elapsedSeconds) / 3600
-        let minutes = Int(elapsedSeconds) / 60 % 60
-        if hours > 0 {
-            return "\(hours) hr \(minutes) min"
-        } else {
-            return "\(minutes) min"
-        }
+        return elapsedSeconds.hmsDescription()
     }
     
     var precision = 1.0 {
