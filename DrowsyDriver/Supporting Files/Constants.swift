@@ -49,6 +49,6 @@ enum Fonts {
     static let NavigationButton = UIFont(name: "\(fontName)-Roman", size: 18)!
     static let TableViewCell = UIFont(name: "\(fontName)-Medium", size: 16)!
     static let TableViewCellDetail = UIFont(name: "\(fontName)-Book", size: 16)!
-    static let TableViewAccessory = UIFont(name: "\(fontName)-Book", size: 24)!
+    static let TableViewAccessory = UIFont(name: "\(fontName)-Book", size: 30)
     static let TableViewFooter = UIFont(name: "\(fontName)-Book", size: 13)!
 }

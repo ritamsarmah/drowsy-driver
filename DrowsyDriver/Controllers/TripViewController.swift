@@ -19,7 +19,6 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     private var endButton: RoundedButton!
     private var settingsButton: UIButton!
     private var driveTimeLabel: UILabel!
-    private var etaLabel: UILabel!
     private var buttonStackView: UIStackView!
     private var quickNavButton: RoundedSelectionItem!
 
@@ -297,19 +296,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         driveTimeLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Constraints.StatusText.leftConstant).isActive = true
         driveTimeLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: Constraints.StatusText.rightConstant).isActive = true
         driveTimeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        driveTimeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constraints.DriveTimeLabel.topConstant).isActive = true
-        
-        // ETA Label
-        etaLabel = UILabel()
-        etaLabel.numberOfLines = 0
-        updateStatus()
-        
-        view.addSubview(etaLabel)
-        etaLabel.translatesAutoresizingMaskIntoConstraints = false
-        etaLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Constraints.StatusText.leftConstant).isActive = true
-        etaLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: Constraints.StatusText.rightConstant).isActive = true
-        etaLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        etaLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        driveTimeLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: Constraints.StatusText.centerYConstant).isActive = true
     }
     
     private enum Constraints {
@@ -338,10 +325,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         enum StatusText {
             static let leftConstant: CGFloat = 24
             static let rightConstant: CGFloat = -24
-        }
-        
-        enum DriveTimeLabel {
-            static let topConstant: CGFloat = 80
+            static let centerYConstant: CGFloat = -64
         }
     }
     

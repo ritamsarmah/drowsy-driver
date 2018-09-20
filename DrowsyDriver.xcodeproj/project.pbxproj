@@ -23,6 +23,7 @@
 		20A2D27C214F4E7E00719082 /* TimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A2D27B214F4E7E00719082 /* TimeTracker.swift */; };
 		20A2D27E214F5CA100719082 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A2D27D214F5CA100719082 /* RepeatingTimer.swift */; };
 		20B18CD32150C39E003520C2 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 20B18CD22150C39E003520C2 /* Settings.storyboard */; };
+		20D8006321534E9D00C5A403 /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8006221534E9D00C5A403 /* PreviewViewController.swift */; };
 		20E7DDC7214FF8C7003B181B /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E7DDC5214FF8C7003B181B /* SettingsViewController.swift */; };
 		20EEE10B214EBC230035E6B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EEE10A214EBC230035E6B6 /* AppDelegate.swift */; };
 		20EEE112214EBC250035E6B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20EEE111214EBC250035E6B6 /* Assets.xcassets */; };
@@ -46,6 +47,7 @@
 		20A2D27B214F4E7E00719082 /* TimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTracker.swift; sourceTree = "<group>"; };
 		20A2D27D214F5CA100719082 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		20B18CD22150C39E003520C2 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		20D8006221534E9D00C5A403 /* PreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
 		20E7DDC5214FF8C7003B181B /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		20EEE107214EBC230035E6B6 /* DrowsyDriver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrowsyDriver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		20EEE10A214EBC230035E6B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 			children = (
 				20E7DDC5214FF8C7003B181B /* SettingsViewController.swift */,
 				2013EA9E2151835E00533D61 /* AlarmSoundViewController.swift */,
+				20D8006221534E9D00C5A403 /* PreviewViewController.swift */,
 				20B18CD22150C39E003520C2 /* Settings.storyboard */,
 			);
 			path = Settings;
@@ -249,6 +252,7 @@
 				20A2D27C214F4E7E00719082 /* TimeTracker.swift in Sources */,
 				20A2D27E214F5CA100719082 /* RepeatingTimer.swift in Sources */,
 				204757D9214F2883004E401E /* Alert.swift in Sources */,
+				20D8006321534E9D00C5A403 /* PreviewViewController.swift in Sources */,
 				20A2D272214F401F00719082 /* UIColor+Formats.swift in Sources */,
 				20E7DDC7214FF8C7003B181B /* SettingsViewController.swift in Sources */,
 				20EEE10B214EBC230035E6B6 /* AppDelegate.swift in Sources */,

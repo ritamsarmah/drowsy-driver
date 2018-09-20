@@ -42,5 +42,11 @@ struct Alert {
     static func presentCameraAccessNeeded(on viewController: UIViewController) {
         presentAlert(on: viewController, title: "Camera Access Needed", message: "DrowsyDriver needs access to your camera to detect your face. Please enable it in your settings.")
     }
+    
+    
+    // MARK: Help and Warnings
+    static func presentFaceDetectionHelp(on viewController: UIViewController) {
+        presentAlert(on: viewController, title: "", message: "Place your phone in a stable position directly in front of you or angled toward your face. Both eyes should be visible with yellow outlines. If the alignment is inaccurate, cover and uncover the front-facing camera to reset the tracking.")
+    }
 
 }

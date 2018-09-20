@@ -45,11 +45,15 @@ class GradientTableViewController: UITableViewController {
         setTableViewBackgroundGradient(to: backgroundGradient)
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setTableViewBackgroundGradient(to: backgroundGradient, frame: CGRect(origin: .zero, size: size))
+    }
+    
     func updateUI() {
         tableView = UITableView(frame: tableView.frame, style: .grouped)
         tableView.separatorColor = Colors.TableViewCellSelected
         tableView.keyboardDismissMode = .onDrag
-        
         
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
@@ -82,6 +86,7 @@ class GradientTableViewController: UITableViewController {
         
         if cell.accessoryType == .disclosureIndicator {
             let accessoryLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 8, height: 20))
+            cell.accessoryView = UIView()
             accessoryLabel.text = "›"
             accessoryLabel.textColor = .white
             accessoryLabel.textAlignment = .center
@@ -89,6 +94,12 @@ class GradientTableViewController: UITableViewController {
             accessoryLabel.sizeToFit()
             accessoryLabel.font = Fonts.TableViewAccessory
             cell.accessoryView = accessoryLabel
+            
+            cell.addSubview(accessoryLabel)
+            accessoryLabel.translatesAutoresizingMaskIntoConstraints = false
+            accessoryLabel.widthAnchor.constraint(equalToConstant: 8).isActive = true
+            accessoryLabel.rightAnchor.constraint(equalTo: cell.rightAnchor, constant: -14).isActive = true
+            accessoryLabel.centerYAnchor.constraint(equalTo: cell.centerYAnchor, constant: -3).isActive = true
         }
     }
     
@@ -113,16 +124,12 @@ class GradientTableViewController: UITableViewController {
     
     // Background Gradient
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        setTableViewBackgroundGradient(to: backgroundGradient, frame: CGRect(origin: .zero, size: size))
-    }
-    
     private func setTableViewBackgroundGradient(to colors: [UIColor], frame: CGRect? = nil) {
         let newLayer = CAGradientLayer()
         newLayer.colors = colors.map { $0.cgColor }
         newLayer.locations = [0.0, 1.0]
         newLayer.frame = frame ?? view.frame
+        newLayer.frame = newLayer.frame.applying(CGAffineTransform(scaleX: 2, y: 2))
         backgroundGradientLayer = newLayer
     }
     
