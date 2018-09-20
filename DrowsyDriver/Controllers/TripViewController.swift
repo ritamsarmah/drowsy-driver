@@ -21,12 +21,12 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     private var driveTimeLabel: UILabel!
     private var etaLabel: UILabel!
     private var buttonStackView: UIStackView!
-    private var restStopButton: RoundedSelectionItem!
+    private var quickNavButton: RoundedSelectionItem!
 
     private var tripTimer = TimeTracker(name: "trip")
     private var snoozeTimer: Timer?
     private var isAlarmOn = false
-    private var alarmPlayer = AVAudioPlayer()
+    private var alarmPlayer: AVAudioPlayer? = AVAudioPlayer()
     
     private var statusText: NSAttributedString {
         let boldAttrs: [NSAttributedString.Key: Any] = [
@@ -46,7 +46,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     private let locationManager = CLLocationManager()
     private let locationUpdateFrequency: TimeInterval = 5
     private var locationTimer: Timer?
-    private var nearestRestStop: MKMapItem?
+    private var nearestQuickNavLocation: MKMapItem?
     
     // MARK: Eye Tracking
     
@@ -94,7 +94,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         // Audio configuration
         let audioData = NSDataAsset(name: SettingsManager.shared.alarmSound.rawValue)!.data
         alarmPlayer = try! AVAudioPlayer(data: audioData)
-        alarmPlayer.numberOfLoops = -1
+        alarmPlayer?.numberOfLoops = -1
         
         // Location configuration
         if CLLocationManager.locationServicesEnabled() {
@@ -117,6 +117,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         snoozeTimer = nil
         locationManager.stopUpdatingLocation()
         stopAlarm()
+        alarmPlayer = nil
     }
     
     @objc func pauseButtonPressed() {
@@ -143,15 +144,15 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         if !isAlarmOn {
             isAlarmOn = true
             backgroundGradient = Colors.Background.Warning
-            alarmPlayer.currentTime = 0
-            alarmPlayer.play()
+            alarmPlayer?.currentTime = 0
+            alarmPlayer?.play()
         }
     }
     
     func stopAlarm() {
         if isAlarmOn {
             isAlarmOn = false
-            alarmPlayer.stop()
+            alarmPlayer?.stop()
             DispatchQueue.main.async {
                 self.backgroundGradient = Colors.Background.Main
             }
@@ -171,7 +172,7 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
     
     @objc func navigateToRestStop() {
         let options = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-        nearestRestStop?.openInMaps(launchOptions: options)
+        nearestQuickNavLocation?.openInMaps(launchOptions: options)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -191,37 +192,37 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         
         let search = MKLocalSearch(request: request)
         search.start { response, _ in
-            guard let restStops = response?.mapItems else {
-                self.restStopButton.textLabel.text = "Location search failed"
-                self.restStopButton.detailLabel.text = "No \"\(SettingsManager.shared.quickNavigateQuery.lowercased())\" found"
+            guard let quickNavLocations = response?.mapItems else {
+                self.quickNavButton.textLabel.text = "Location search failed"
+                self.quickNavButton.detailLabel.text = "No \"\(SettingsManager.shared.quickNavigateQuery.lowercased())\" found"
                 return
             }
             
             // Find nearest rest stop
-            self.nearestRestStop = restStops.reduce((CLLocationDistanceMax, nil)) { (nearest, stop) in
+            self.nearestQuickNavLocation = quickNavLocations.reduce((CLLocationDistanceMax, nil)) { (nearest, stop) in
                 let coord = stop.placemark.coordinate
-                let restStopLocation = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
-                let travelDistance = location.distance(from: restStopLocation)
+                let quickNavLocation = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
+                let travelDistance = location.distance(from: quickNavLocation)
                 return travelDistance < nearest.0 ? (travelDistance, stop) : nearest
             }.1
             
             // Get directions to nearest rest stop
             let directionsRequest = MKDirections.Request()
             directionsRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: userCoordinate))
-            directionsRequest.destination = self.nearestRestStop
+            directionsRequest.destination = self.nearestQuickNavLocation
             directionsRequest.transportType = .automobile
             
             let directions = MKDirections(request: directionsRequest)
             directions.calculateETA(completionHandler: { [weak self ] (response, error) in
                 guard let eta = response?.expectedTravelTime else {
-                    self?.restStopButton.textLabel.text = "Location search failed"
-                    self?.restStopButton.detailLabel.text = "No \"\(SettingsManager.shared.quickNavigateQuery.lowercased())\" found"
+                    self?.quickNavButton.textLabel.text = "Location search failed"
+                    self?.quickNavButton.detailLabel.text = "No \"\(SettingsManager.shared.quickNavigateQuery.lowercased())\" found"
                     return
                 }
                 
                 DispatchQueue.main.async {
-                    self?.restStopButton.textLabel.text = eta.hoursMinutesDescription()
-                    self?.restStopButton.detailLabel.text = self?.nearestRestStop?.name ?? "from nearest \(SettingsManager.shared.quickNavigateQuery.lowercased())"
+                    self?.quickNavButton.textLabel.text = eta.hoursMinutesDescription()
+                    self?.quickNavButton.detailLabel.text = self?.nearestQuickNavLocation?.name ?? "from nearest \(SettingsManager.shared.quickNavigateQuery.lowercased())"
                 }
             })
         }
@@ -274,17 +275,17 @@ class TripViewController: GradientViewController, AVCaptureVideoDataOutputSample
         settingsButton.heightAnchor.constraint(equalToConstant: Constraints.SettingsButton.height).isActive = true
         
         // Rest Stop View
-        restStopButton = RoundedSelectionItem()
-        restStopButton.textLabel.text = "..."
-        restStopButton.detailLabel.text = "to nearest rest stop"
+        quickNavButton = RoundedSelectionItem()
+        quickNavButton.textLabel.text = "..."
+        quickNavButton.detailLabel.text = "to nearest location"
         
-        view.addSubview(restStopButton)
-        restStopButton.translatesAutoresizingMaskIntoConstraints = false
-        restStopButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Constraints.RestStopView.leftConstant).isActive = true
-        restStopButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: Constraints.RestStopView.rightConstant).isActive = true
-        restStopButton.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: Constraints.RestStopView.bottomConstant).isActive = true
-        restStopButton.heightAnchor.constraint(equalToConstant: Constraints.RestStopView.height).isActive = true
-        restStopButton.addTarget(self, action: #selector(navigateToRestStop), for: .touchUpInside)
+        view.addSubview(quickNavButton)
+        quickNavButton.translatesAutoresizingMaskIntoConstraints = false
+        quickNavButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Constraints.RestStopView.leftConstant).isActive = true
+        quickNavButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: Constraints.RestStopView.rightConstant).isActive = true
+        quickNavButton.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: Constraints.RestStopView.bottomConstant).isActive = true
+        quickNavButton.heightAnchor.constraint(equalToConstant: Constraints.RestStopView.height).isActive = true
+        quickNavButton.addTarget(self, action: #selector(navigateToRestStop), for: .touchUpInside)
         
         // Drive Time Label
         driveTimeLabel = UILabel()
@@ -599,8 +600,13 @@ extension TripViewController {
                     let results = landmarksRequest.results as? [VNFaceObservation] else {
                         return
                 }
+            
+                guard let areEyesClosed = self.areEyesClosed(results) else {
+                    print("Eyes not detected")
+                    return
+                }
                 
-                if self.areEyesClosed(results) {
+                if areEyesClosed {
                     if self.snoozeTimer == nil {
                         DispatchQueue.main.async {
                             self.snoozeTimer = Timer.scheduledTimer(timeInterval: EyeAspectRatio.TimeInterval,
@@ -644,11 +650,16 @@ extension TripViewController {
         }
     }
     
-    func areEyesClosed(_ faceObservations: [VNFaceObservation], threshold: Float = EyeAspectRatio.Threshold) -> Bool {
+    // Returns if eyes are closed. If not enough
+    func areEyesClosed(_ faceObservations: [VNFaceObservation], threshold: Float = EyeAspectRatio.Threshold) -> Bool? {
         for faceObservation in faceObservations {
-            guard let landmarks = faceObservation.landmarks else { return false }
-            let leftEAR = calculateEyeAspectRatio(landmarks.leftEye!)
-            let rightEAR = calculateEyeAspectRatio(landmarks.rightEye!)
+            guard let landmarks = faceObservation.landmarks,
+                let leftEye = landmarks.leftEye,
+                let rightEye = landmarks.rightEye else {
+                    return nil
+            }
+            let leftEAR = calculateEyeAspectRatio(leftEye)
+            let rightEAR = calculateEyeAspectRatio(rightEye)
             let averageEAR = (leftEAR + rightEAR) / 2.0
             return averageEAR < threshold
         }
