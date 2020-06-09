@@ -21,7 +21,7 @@ class SettingsManager {
         case beep = "Beep"
     }
     
-    private let defaultQuickNavigation = "Rest Stop"
+    private let defaultQuickNavigation = "Truck Stop"
     
     static let shared = SettingsManager()
     
